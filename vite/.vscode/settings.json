@@ -1,0 +1,15 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.formatOnSave": true,
+  // add Vue3 @import Settings
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vetur.useWorkspaceDependencies": true,
+  "vetur.experimental.templateInterpolationService": true,
+  // add Tailwind CSS Settings
+  "css.validate": false,
+  "editor.quickSuggestions": {
+    "strings": true
+  }
+}

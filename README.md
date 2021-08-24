@@ -143,4 +143,17 @@ npm install --save-dev ts-jest@26
 # https://github.com/storybookjs/storybook/issues/13801
 
 npm install --save-dev daisyui
+
+# https://github.com/jpkleemans/vite-svg-loader
+npm install vite-svg-loader --save-dev
 ```
+
+## アイコン
+
+https://github.com/icons8/line-awesome
+
+master ブランチを zip でダウンロードして使う
+
+## 背景画像
+
+https://www.pakutaso.com/20200921260post-26160.html

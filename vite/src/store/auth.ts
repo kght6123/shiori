@@ -16,7 +16,10 @@ const authStore = () => {
     const provider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithPopup(provider)
   }
-  const signout = () => firebase.auth().signOut()
+  const signout = () => {
+    console.log('signOut!!!')
+    firebase.auth().signOut()
+  }
   const updateUser = (input: { displayName?: string; photoURL?: string }) => {
     firebase
       .auth()

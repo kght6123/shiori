@@ -12,9 +12,9 @@ const authStore = () => {
       state.photoURL = user.photoURL ?? ''
     }
   }
-  const signin = () => {
+  const signin = async () => {
     const provider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithPopup(provider)
+    return await firebase.auth().signInWithPopup(provider)
   }
   const signout = () => {
     console.log('signOut!!!')

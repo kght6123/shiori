@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Setting from '@/views/Setting.vue'
+import MyPage from '@/views/MyPage.vue'
 
 const routes = [
   {
@@ -9,7 +10,12 @@ const routes = [
     component: Home,
   },
   {
-    path: '/setting',
+    path: '/:id',
+    name: 'MyPage',
+    component: MyPage,
+  },
+  {
+    path: '/:id/setting',
     name: 'Setting',
     component: Setting,
   },

@@ -60,7 +60,7 @@
     </div>
     <div v-if="state.isLoggedin" class="flex-none">
       <div class="avatar">
-        <div class="w-10 h-10 m-1 rounded-full">
+        <div class="w-10 h-10 m-1 mask mask-squircle">
           <img :src="state.photoURL" />
         </div>
       </div>
@@ -71,6 +71,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { useAuthStore } from '@/store/auth'
+  import AtomsButton from '@/components/atoms/Button.vue'
   import home from '@/icons/home-solid.svg'
   import cog from '@/icons/cog-solid.svg'
   import heart from '@/icons/heart-solid.svg'
@@ -79,7 +80,7 @@
 
   export default defineComponent({
     name: 'Header',
-    components: {},
+    components: { AtomsButton: AtomsButton },
     setup() {
       const { signout, state } = useAuthStore()
       return {

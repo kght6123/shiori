@@ -33,11 +33,12 @@
   export default defineComponent({
     name: 'MolculesSignInWithGoogleButton',
     components: {
-      AtomsButton,
+      AtomsButton: AtomsButton,
     },
     emits: ['click'],
     setup(_props, { emit }) {
       const click = (value: string | null | undefined) => {
+        console.log('click')
         emit('click', value)
       }
       return { click }

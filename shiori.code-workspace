@@ -1,12 +1,12 @@
 {
   "folders": [
-	{
-		"path": "."
-	},
-	{
-		"path": "vite"
-	}
-],
+    {
+      "path": "vite"
+    },
+    {
+      "path": "backend/functions"
+    }
+  ],
   "settings": {
     "vetur.experimental.templateInterpolationService": true
   }

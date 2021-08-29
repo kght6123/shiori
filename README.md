@@ -146,6 +146,9 @@ npm install --save-dev daisyui
 
 # https://github.com/jpkleemans/vite-svg-loader
 npm install vite-svg-loader --save-dev
+
+# https://github.com/Mitica/ascrape-js
+npm install ascrape
 ```
 
 ## アイコン

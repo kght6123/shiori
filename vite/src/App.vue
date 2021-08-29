@@ -13,8 +13,8 @@
   export default defineComponent({
     name: 'App',
     components: {
-      Header,
-      Footer,
+      Header: Header,
+      Footer: Footer,
     },
     setup() {
       return { routerViewStyle: `background-image: url(${bodyImgUrl})` }

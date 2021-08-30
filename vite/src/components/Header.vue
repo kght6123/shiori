@@ -24,11 +24,16 @@
     </div>
     <div v-if="state.isLoggedin" class="flex-1 lg:flex-none">
       <div class="form-control">
-        <input type="text" placeholder="Search" class="input input-ghost" />
+        <input
+          v-model="data.keyword"
+          type="text"
+          placeholder="Search"
+          class="input input-ghost"
+        />
       </div>
     </div>
     <div v-if="state.isLoggedin" class="flex-none">
-      <button class="btn btn-square btn-ghost">
+      <button class="btn btn-square btn-ghost" @click="searchIndexesKeyword">
         <component
           :is="search"
           class="inline-block w-6 h-6 mr-1 fill-current"
@@ -69,7 +74,10 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
+  import { defineComponent, reactive } from 'vue'
+  import firebase from 'firebase/app'
+  import 'firebase/functions'
+
   import { useAuthStore } from '@/store/auth'
   import AtomsButton from '@/components/atoms/Button.vue'
   import home from '@/icons/home-solid.svg'
@@ -78,11 +86,25 @@
   import search from '@/icons/search-solid.svg'
   import signOut from '@/icons/sign-out-alt-solid.svg'
 
+  export interface Data {
+    keyword: string | null
+  }
   export default defineComponent({
     name: 'Header',
     components: { AtomsButton: AtomsButton },
     setup() {
       const { signout, state } = useAuthStore()
+      const data = reactive<Data>({ keyword: null })
+      const searchIndexesKeyword = () => {
+        // HTTP呼び出し
+        firebase.functions().useEmulator('localhost', 5001)
+        const echo_onCall = firebase
+          .functions()
+          .httpsCallable('searchIndexesKeyword')
+        echo_onCall({ keyword: data.keyword }).then((result) =>
+          alert(JSON.stringify(result))
+        )
+      }
       return {
         state,
         signout,
@@ -91,6 +113,8 @@
         home,
         cog,
         signOut,
+        data,
+        searchIndexesKeyword,
       }
     },
   })

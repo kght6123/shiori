@@ -26,12 +26,12 @@ const runtimeOpts: RuntimeOptions = {
 
 export const helloWorld = functions
   .runWith(runtimeOpts)
-  .https.onCall(async (data, context) => {
+  .https.onCall(async ({ url }, context) => {
     // ensure #posts exists in the DOM.
     if (context.auth) {
       // console.log('context.auth.uid: ' + context.auth.uid)
-      const url =
-        'https://kght6123.page/posts/Re:VIEW/IBM%20Plex%20Sans%20JP%20を%20Re:VIEW%20に導入してみた/'
+      // const url =
+      //   'https://kght6123.page/posts/Re:VIEW/IBM%20Plex%20Sans%20JP%20を%20Re:VIEW%20に導入してみた/'
       // console.log('data: ' + JSON.stringify(data))
       // console.log('context.auth: ' + JSON.stringify(context.auth))
       const browser = await chromium.launch({
@@ -75,7 +75,7 @@ export const helloWorld = functions
       // 仮で入れる
       // await page.waitForNavigation({waitUntil: ['load', 'networkidle']});
       // https://playwright.dev/docs/next/api/class-page#pagewaitforloadstatestate-options
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState('domcontentloaded')
       // og:imageタグを取得
       const metaOgImage = await page.$(`meta[property='og:image']`)
       const metaOgImageUrl = await metaOgImage?.getAttribute('content')
@@ -89,7 +89,7 @@ export const helloWorld = functions
       // data.metaTags = metaTags
       // ページコンテンツを取得
       const html = await page.content()
-      const readResult = await new Promise((resolve) => {
+      const readResult = (await new Promise((resolve) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         read(html, (err: any, article: any) => {
           // Main Article
@@ -131,8 +131,9 @@ export const helloWorld = functions
           // Close article to clean up jsdom and prevent leaks
           article.close()
         })
-      })
-      data.html = readResult
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      })) as any
+      // data.html = readResult
       // firestoreに保存
       const headersRef = db
         .collection('shiori-users')
@@ -141,24 +142,91 @@ export const helloWorld = functions
         .doc()
       await headersRef.set({
         url,
-        title: data.html.title,
+        title: readResult.title,
         ogImageUrl,
-      })
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      } as Header)
       const indexesRef = db
         .collection('shiori-users')
         .doc(context.auth?.uid)
         .collection('indexes')
         .doc(headersRef.id)
-      await indexesRef.set(data.html.index)
+      await indexesRef.set(readResult.index)
       const detailsRef = db
         .collection('shiori-users')
         .doc(context.auth?.uid)
         .collection('details')
         .doc(headersRef.id)
       await detailsRef.set({
-        content: data.html.content,
+        content: readResult.content,
       })
       return { status: 200 }
     }
     return { status: 500 }
   })
+
+interface Header {
+  ogImageUrl: string
+  title: string
+  url: string
+}
+
+export const searchIndexesKeyword = functions.https.onCall(
+  async ({ keyword, limit = 30 }, context) => {
+    // ensure #posts exists in the DOM.
+    if (context.auth) {
+      if (!keyword) return { status: 400 }
+      const searchWords = Array.from(new Set(segmenter.segment(keyword)))
+      let query = db
+        .collection('shiori-users')
+        .doc(context.auth?.uid)
+        .collection('indexes')
+        .limit(limit)
+
+      searchWords.forEach((word) => {
+        query = query.where(`content.${word}`, '==', 0)
+      })
+      searchWords.forEach((word) => {
+        query = query.where(`title.${word}`, '==', 0)
+      })
+
+      const snap = await query.get()
+      const idList = snap.docs.map((doc) => doc.id)
+      const results = []
+      for (const id of idList) {
+        const headersDocRef = db
+          .collection('shiori-users')
+          .doc(context.auth?.uid)
+          .collection('headers')
+          .doc(id)
+        const snapShot = await headersDocRef.get()
+        console.log(snapShot.data)
+        const { ogImageUrl, title, url } = snapShot.data() as unknown as Header
+        results.push({ ogImageUrl, title, url })
+      }
+      return { status: 200, results }
+    }
+    return { status: 500 }
+  },
+)
+
+export const searchCreateAtDesc = functions.https.onCall(
+  async ({ limit = 30 }, context) => {
+    // ensure #posts exists in the DOM.
+    if (context.auth) {
+      const query = db
+        .collection('shiori-users')
+        .doc(context.auth?.uid)
+        .collection('headers')
+        .orderBy('createdAt', 'desc')
+        .limit(limit)
+      const snap = await query.get()
+      const results = snap.docs.map((doc) => {
+        const { ogImageUrl, title, url } = doc.data() as unknown as Header
+        return { ogImageUrl, title, url }
+      })
+      return { status: 200, results }
+    }
+    return { status: 500 }
+  },
+)

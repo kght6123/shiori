@@ -11,6 +11,7 @@
             type="text"
           />
         </div>
+        {{ registList }}
         <div class="mt-2 form-control">
           <button type="button" class="btn btn-primary" @click="regist">
             とうろく
@@ -25,9 +26,13 @@
   window.global = window
   import { defineComponent, reactive } from 'vue'
   import firebase from 'firebase/app'
-  import 'firebase/firestore'
   import 'firebase/functions'
 
+  interface Header {
+    ogImageUrl: string
+    title: string
+    url: string
+  }
   export interface State {
     url: string | null
   }
@@ -48,16 +53,29 @@
         // const text = await response.text()
         // console.log(text)
         const value = {
-          id: '001',
-          name: 'こんにちは',
-          isDone: true,
+          url: state.url,
         }
         // HTTP呼び出し
         firebase.functions().useEmulator('localhost', 5001)
         const echo_onCall = firebase.functions().httpsCallable('helloWorld')
         echo_onCall(value).then((result) => alert(JSON.stringify(result)))
       }
-      return { state, regist }
+      const registList: Array<Header> = reactive([])
+      const searchCreateAtDesc = () => {
+        // HTTP呼び出し
+        firebase.functions().useEmulator('localhost', 5001)
+        const echo_onCall = firebase
+          .functions()
+          .httpsCallable('searchCreateAtDesc')
+        echo_onCall({ limit: 30 }).then((result) => {
+          // alert(JSON.stringify(result.data.results))
+          ;(result.data.results as Array<Header>).forEach((header) => {
+            registList.push(header)
+          })
+        })
+      }
+      searchCreateAtDesc()
+      return { state, regist, registList }
     },
   })
 </script>

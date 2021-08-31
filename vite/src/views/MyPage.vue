@@ -1,21 +1,55 @@
 <template>
-  <div class="min-h-screen hero">
-    <div class="flex-shrink-0 w-full max-w-sm shadow-2xl card glass-dark">
-      <div class="card-body">
-        <div class="form-control">
-          <label class="label label-text">URL</label>
-          <input
-            v-model="state.url"
-            placeholder="https://kght6123.page/"
-            class="input input-bordered"
-            type="text"
-          />
+  <div>
+    <div class="min-h-screen hero">
+      <div class="flex-shrink-0 w-full max-w-sm shadow-2xl card glass-dark">
+        <div class="card-body">
+          <div class="form-control">
+            <label class="label label-text">URL</label>
+            <input
+              v-model="state.url"
+              placeholder="https://kght6123.page/"
+              class="input input-bordered"
+              type="text"
+            />
+          </div>
+          <div class="mt-2 form-control">
+            <button type="button" class="btn btn-primary" @click="regist">
+              とうろく
+            </button>
+          </div>
         </div>
-        {{ registList }}
-        <div class="mt-2 form-control">
-          <button type="button" class="btn btn-primary" @click="regist">
-            とうろく
-          </button>
+      </div>
+    </div>
+    <div class="-mt-96 hero min-h-[24rem] pb-48">
+      <div
+        class="
+          w-11/12
+          max-w-[100vw]
+          md:masonry-2-col
+          lg:masonry-3-col
+          before:box-inherit
+          after:box-inherit
+          space-y-4
+        "
+      >
+        <div
+          v-for="item in registList"
+          :key="item.url"
+          class="card bordered break-inside glass-dark"
+        >
+          <figure>
+            <img :src="item.ogImageUrl" />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title">
+              {{ item.title }}
+              <div class="mx-2 badge badge-secondary">NEW</div>
+            </h2>
+            <p>{{ item.url }}</p>
+            <div class="justify-end card-actions">
+              <button class="btn btn-secondary">More info</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

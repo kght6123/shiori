@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed-header glass-dark">
+  <div class="z-20 fixed-header glass-dark">
     <div class="navbar-start">
       <!-- TODO:後でAmazonの手を振ってくれるアニメーションみたいなの入れたい
       <span v-if="state.isLoggedin" class="text-lg font-bold"

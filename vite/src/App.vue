@@ -1,7 +1,7 @@
 <template>
   <Header />
-  <Footer />
   <router-view class="bg-fixed bg-cover" :style="routerViewStyle" />
+  <Footer />
 </template>
 
 <script lang="ts">

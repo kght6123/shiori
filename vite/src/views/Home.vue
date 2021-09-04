@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen hero">
+  <Header />
+  <Body class="min-h-screen hero">
     <div class="flex-col justify-center hero-content lg:flex-row">
       <div class="text-center lg:text-left">
         <h1 class="mb-5 text-5xl font-bold">栞</h1>
@@ -37,11 +38,15 @@
         </div>
       </div>
     </div>
-  </div>
+  </Body>
+  <Footer />
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
+  import Header from '@/components/Header.vue'
+  import Body from '@/components/Body.vue'
+  import Footer from '@/components/Footer.vue'
   import OrganismsSignInAndSignOutForm from '@/components/organisms/SignInAndSignOutForm.vue'
   import { useAuthStore } from '@/store/auth'
 
@@ -49,6 +54,9 @@
     name: 'Home',
     components: {
       OrganismsSignInAndSignOutForm,
+      Header: Header,
+      Body: Body,
+      Footer: Footer,
     },
     setup() {
       const guest = '{{ Guest }}'

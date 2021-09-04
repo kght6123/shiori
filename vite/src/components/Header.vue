@@ -20,10 +20,7 @@
             class="btn btn-square btn-ghost"
             @click="searchIndexesKeyword"
           >
-            <component
-              :is="search"
-              class="inline-block w-6 h-6 mr-1 fill-current"
-            />
+            <component :is="search" class="inline-block w-6 h-6 fill-current" />
           </button>
         </div>
       </div>
@@ -34,10 +31,7 @@
         class="btn btn-square btn-ghost"
         @click="signout()"
       >
-        <component
-          :is="signOut"
-          class="inline-block w-6 h-6 mr-1 fill-current"
-        />
+        <component :is="signOut" class="inline-block w-6 h-6 fill-current" />
       </atoms-button>
       <div v-if="state.isLoggedin" class="avatar">
         <div class="w-10 h-10 m-1 mask mask-squircle">
@@ -64,10 +58,8 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue'
-  import firebase from 'firebase/app'
-  import 'firebase/functions'
-
+  import { defineComponent, reactive, onMounted } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import { useAuthStore } from '@/store/auth'
   import AtomsButton from '@/components/atoms/Button.vue'
   import home from '@/icons/home-solid.svg'
@@ -82,19 +74,34 @@
   export default defineComponent({
     name: 'Header',
     components: { AtomsButton: AtomsButton },
-    setup() {
-      const { signout, state } = useAuthStore()
+    emits: ['search'],
+    setup(props, { emit }) {
+      const router = useRouter()
+      const { signout, state, getUser } = useAuthStore()
+      const route = useRoute()
       const data = reactive<Data>({ keyword: null })
-      const searchIndexesKeyword = () => {
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const echo_onCall = firebase
-          .functions()
-          .httpsCallable('searchIndexesKeyword')
-        echo_onCall({ keyword: data.keyword }).then((result) =>
-          alert(JSON.stringify(result))
-        )
+      const searchIndexesKeyword = async () => {
+        console.log('push', {
+          name: 'SearchKeyword',
+          params: { keyword: data.keyword, id: getUser()?.uid },
+        })
+        await router.push({
+          name: 'SearchKeyword',
+          params: { id: getUser()?.uid, keyword: data.keyword },
+        })
+        emit('search', data.keyword)
+        // firebase.functions().useEmulator('localhost', 5001)
+        // const echo_onCall = firebase
+        //   .functions()
+        //   .httpsCallable('searchIndexesKeyword')
+        // echo_onCall({ keyword: data.keyword }).then((result) =>
+        //   alert(JSON.stringify(result))
+        // )
       }
+      onMounted(() => {
+        data.keyword = route.params.keyword as string
+        console.log('data.keyword', data.keyword)
+      })
       return {
         state,
         signout,

@@ -26,11 +26,15 @@ const authStore = () => {
       .currentUser?.updateProfile(input)
       .then(() => setUser(firebase.auth().currentUser))
   }
+  const getUser = () => {
+    return firebase.auth().currentUser
+  }
 
   firebase.auth().onAuthStateChanged((user) => setUser(user))
 
   return {
     state,
+    getUser,
     setUser,
     signin,
     signout,

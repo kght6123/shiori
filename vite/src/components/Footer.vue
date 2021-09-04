@@ -1,6 +1,6 @@
 <template>
   <footer class="z-20 fixed-footer glass-dark">
-    <!--div>
+    <div>
       <div class="grid grid-flow-col gap-4">
         <a>
           <svg
@@ -42,7 +42,7 @@
           </svg>
         </a>
       </div>
-    </div-->
+    </div>
     <div>
       <p class="text-xs">Copyright © 2021 kght6123 All right reserved.</p>
     </div>

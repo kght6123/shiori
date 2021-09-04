@@ -1,5 +1,6 @@
 <template>
-  <div class="view">
+  <Header />
+  <Body class="view">
     <h1>Setting</h1>
     <div class="updater">
       <label>displayName</label>
@@ -10,15 +11,25 @@
       <input v-model="photoURL" type="text" />
     </div>
     <button @click="update()">Update</button>
-  </div>
+  </Body>
+  <Footer />
 </template>
 
 <script lang="ts">
   import { defineComponent, ref, watchEffect } from 'vue'
+  import Header from '@/components/Header.vue'
+  import Body from '@/components/Body.vue'
+  import Footer from '@/components/Footer.vue'
+
   import { useAuthStore } from '@/store/auth'
 
   export default defineComponent({
     name: 'Setting',
+    components: {
+      Header: Header,
+      Footer: Footer,
+      Body: Body,
+    },
     setup() {
       const { state, updateUser } = useAuthStore()
       const displayName = ref('')

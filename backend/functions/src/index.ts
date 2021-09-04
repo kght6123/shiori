@@ -183,15 +183,19 @@ export const searchIndexesKeyword = functions.https.onCall(
         .collection('indexes')
         .limit(limit)
 
-      searchWords.forEach((word) => {
-        query = query.where(`content.${word}`, '==', 0)
-      })
+      // titleとcontentは排他条件
+      // searchWords.forEach((word) => {
+      //   query = query.where(`content.${word}`, '==', 0)
+      // })
+      console.log(searchWords)
       searchWords.forEach((word) => {
         query = query.where(`title.${word}`, '==', 0)
       })
 
       const snap = await query.get()
+      console.log(snap.size)
       const idList = snap.docs.map((doc) => doc.id)
+      console.log(idList)
       const results = []
       for (const id of idList) {
         const headersDocRef = db
@@ -200,7 +204,7 @@ export const searchIndexesKeyword = functions.https.onCall(
           .collection('headers')
           .doc(id)
         const snapShot = await headersDocRef.get()
-        console.log(snapShot.data)
+        console.log(snapShot.data())
         const { ogImageUrl, title, url } = snapShot.data() as unknown as Header
         results.push({ ogImageUrl, title, url })
       }

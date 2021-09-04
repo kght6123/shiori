@@ -1,5 +1,7 @@
 <template>
-  <router-view class="bg-fixed bg-cover" :style="routerViewStyle" />
+  <div class="bg-fixed bg-cover" :style="routerViewStyle">
+    <slot></slot>
+  </div>
 </template>
 
 <script lang="ts">
@@ -7,7 +9,7 @@
   import bodyImgUrl from '@/assets/065AME0226_TP_V.jpg'
 
   export default defineComponent({
-    name: 'App',
+    name: 'Body',
     components: {},
     setup() {
       return { routerViewStyle: `background-image: url(${bodyImgUrl})` }

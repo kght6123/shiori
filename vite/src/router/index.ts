@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue'
 import Setting from '@/views/Setting.vue'
 import MyPage from '@/views/MyPage.vue'
 import SearchKeyword from '@/views/SearchKeyword.vue'
+import FavoriteOnly from '@/views/FavoriteOnly.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/:id/setting',
     name: 'Setting',
     component: Setting,
+  },
+  {
+    path: '/:id/favorite',
+    name: 'FavoriteOnly',
+    component: FavoriteOnly,
   },
 ]
 

@@ -17,7 +17,7 @@
         "
       >
         <div
-          v-for="item in searchList"
+          v-for="(item, index) in searchList"
           :key="item.url"
           class="card bordered break-inside glass-dark"
         >
@@ -34,15 +34,29 @@
             }}</a>
             <div class="justify-between card-actions">
               <div>
-                <button class="btn btn-square btn-ghost">
+                <button
+                  class="btn btn-square btn-ghost"
+                  @click="updateFavorite(item.id, item.favorite, index)"
+                >
                   <component
                     :is="heart"
+                    :class="{
+                      'text-pink-500': item.favorite,
+                      'text-gray-300': !item.favorite,
+                    }"
                     class="inline-block w-10 h-10 fill-current"
                   />
                 </button>
-                <button class="btn btn-square btn-ghost">
+                <button
+                  class="btn btn-square btn-ghost"
+                  @click="updatPinning(item.id, item.pinning, index)"
+                >
                   <component
                     :is="thumbtack"
+                    :class="{
+                      'text-pink-500': item.pinning,
+                      'text-gray-300': !item.pinning,
+                    }"
                     class="inline-block w-10 h-10 fill-current"
                   />
                 </button>
@@ -70,6 +84,9 @@
     ogImageUrl: string
     title: string
     url: string
+    id: string
+    favorite: boolean
+    pinning: boolean
   }
   export interface State {
     keyword: string | null
@@ -106,7 +123,40 @@
         console.log('keyword', keyword)
         search(keyword)
       })
-      return { search, searchList, heart, thumbtack }
+      const updateFavorite = async (
+        id: string,
+        favorite = true,
+        index: number
+      ) => {
+        // HTTP呼び出し
+        firebase.functions().useEmulator('localhost', 5001)
+        const result = await firebase
+          .functions()
+          .httpsCallable('updateFavorite')({ id, favorite: !favorite })
+        alert(JSON.stringify(result))
+        searchList[index].favorite = !favorite
+      }
+      const updatPinning = async (
+        id: string,
+        pinning = true,
+        index: number
+      ) => {
+        // HTTP呼び出し
+        firebase.functions().useEmulator('localhost', 5001)
+        const result = await firebase.functions().httpsCallable('updatPinning')(
+          { id, pinning: !pinning }
+        )
+        alert(JSON.stringify(result))
+        searchList[index].pinning = !pinning
+      }
+      return {
+        search,
+        searchList,
+        heart,
+        thumbtack,
+        updateFavorite,
+        updatPinning,
+      }
     },
   })
 </script>

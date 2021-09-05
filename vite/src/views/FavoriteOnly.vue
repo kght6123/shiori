@@ -1,78 +1,7 @@
 <template>
   <Header />
   <Body>
-    <div class="min-h-screen hero">
-      <div class="flex-shrink-0 w-full max-w-sm shadow-2xl card glass-dark">
-        <div class="card-body">
-          <div class="form-control">
-            <label class="label label-text">URL</label>
-            <input
-              v-model="state.url"
-              placeholder="https://kght6123.page/"
-              class="input input-bordered"
-              type="text"
-            />
-          </div>
-          <div class="mt-2 form-control">
-            <button type="button" class="btn btn-primary" @click="regist">
-              とうろく
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="mt-72 hero">
-        <div class="shadow-2xl btn-group">
-          <button class="btn btn-active" @click="searchFavoriteOnly">
-            <component
-              :is="heart"
-              class="inline-block w-6 h-6 mr-1 fill-current"
-            />お気に入りのみ
-          </button>
-          <!-- TODO: タグ検索用の拡張用
-          <button class="btn btn-ghost glass-dark">
-            <component
-              :is="tag"
-              class="inline-block w-6 h-6 mr-1 fill-current"
-            />たぐ1
-          </button>
-          <button class="btn btn-ghost glass-dark">
-            <component
-              :is="tag"
-              class="inline-block w-6 h-6 mr-1 fill-current"
-            />たぐ2
-          </button>
-          <button class="btn btn-ghost glass-dark">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              class="inline-block w-4 stroke-current"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-              ></path>
-            </svg>
-          </button>
-          -->
-        </div>
-      </div>
-    </div>
-    <div
-      class="
-        -mt-36
-        sm:-mt-64
-        md:-mt-28
-        lg:-mt-56
-        xl:-mt-52
-        2xl:-mt-80
-        hero
-        min-h-[24rem]
-        pb-48
-      "
-    >
+    <div class="min-h-screen pt-20 hero">
       <div
         class="
           w-11/12
@@ -88,7 +17,7 @@
         "
       >
         <div
-          v-for="(item, index) in registList"
+          v-for="(item, index) in searchList"
           :key="item.url"
           class="card bordered break-inside glass-dark"
         >
@@ -142,14 +71,11 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { useAuthStore } from '@/store/auth'
+  import { defineComponent, reactive, onMounted } from 'vue'
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
-  import tag from '@/icons/tag-solid.svg'
   import firebase from 'firebase/app'
   import 'firebase/functions'
 
@@ -162,7 +88,7 @@
     pinning: boolean
   }
   export interface State {
-    url: string | null
+    keyword: string | null
   }
   export default defineComponent({
     name: 'MyPage',
@@ -171,42 +97,23 @@
       Body: Body,
     },
     setup() {
-      const state = reactive<State>({ url: null })
-      const router = useRouter()
-      const { getUser } = useAuthStore()
-      const regist = async () => {
-        console.log(state.url)
-        // const response = await fetch(state.url, {
-        //   // method: 'GET',
-        //   // mode: 'no-cors',
-        //   // headers: {
-        //   //   'Content-Type': 'text/html',
-        //   // },
-        // })
-        // const text = await response.text()
-        // console.log(text)
-        const value = {
-          url: state.url,
-        }
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const echo_onCall = firebase.functions().httpsCallable('helloWorld')
-        echo_onCall(value).then((result) => alert(JSON.stringify(result)))
-      }
-      const registList: Array<ShioriHeader> = reactive([])
-      const searchCreateAtDesc = () => {
+      const searchList: Array<ShioriHeader> = reactive([])
+      const search = () => {
         // HTTP呼び出し
         firebase.functions().useEmulator('localhost', 5001)
         const echo_onCall = firebase
           .functions()
-          .httpsCallable('searchCreateAtDesc')
+          .httpsCallable('searchCreateAtDescFavoriteOnly')
         echo_onCall({ limit: 30 }).then((result) => {
           // alert(JSON.stringify(result.data.results))
           ;(result.data.results as Array<ShioriHeader>).forEach((header) => {
-            registList.push(header)
+            searchList.push(header)
           })
         })
       }
+      onMounted(() => {
+        search()
+      })
       const updateFavorite = async (
         id: string,
         favorite = true,
@@ -218,7 +125,7 @@
           .functions()
           .httpsCallable('updateFavorite')({ id, favorite: !favorite })
         alert(JSON.stringify(result))
-        registList[index].favorite = !favorite
+        searchList[index].favorite = !favorite
       }
       const updatPinning = async (
         id: string,
@@ -231,25 +138,15 @@
           { id, pinning: !pinning }
         )
         alert(JSON.stringify(result))
-        registList[index].pinning = !pinning
+        searchList[index].pinning = !pinning
       }
-      const searchFavoriteOnly = async () => {
-        await router.push({
-          name: 'FavoriteOnly',
-          params: { id: getUser()?.uid },
-        })
-      }
-      searchCreateAtDesc()
       return {
-        state,
-        regist,
-        registList,
+        search,
+        searchList,
         heart,
         thumbtack,
-        tag,
         updateFavorite,
         updatPinning,
-        searchFavoriteOnly,
       }
     },
   })

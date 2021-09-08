@@ -1,4 +1,5 @@
 <template>
+  <Loading ref="loading" />
   <Header />
   <Body class="view">
     <h1>Setting</h1>
@@ -20,6 +21,7 @@
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
   import Footer from '@/components/Footer.vue'
+  import Loading from '@/components/Loading.vue'
 
   import { useAuthStore } from '@/store/auth'
 
@@ -29,20 +31,25 @@
       Header: Header,
       Footer: Footer,
       Body: Body,
+      Loading: Loading,
     },
     setup() {
+      const loading = ref<InstanceType<typeof Loading>>()
       const { state, updateUser } = useAuthStore()
       const displayName = ref('')
       const photoURL = ref('')
-      const update = () =>
+      const update = () => {
+        loading?.value?.start()
         updateUser({ displayName: displayName.value, photoURL: photoURL.value })
+        loading?.value?.finish()
+      }
 
       watchEffect(() => {
         displayName.value = state.displayName
         photoURL.value = state.photoURL
       })
 
-      return { displayName, photoURL, update }
+      return { displayName, photoURL, update, loading }
     },
   })
 </script>

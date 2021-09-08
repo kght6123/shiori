@@ -1,4 +1,5 @@
 <template>
+  <Loading ref="loading" />
   <Header />
   <Body>
     <div class="min-h-screen hero">
@@ -142,11 +143,12 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue'
+  import { defineComponent, reactive, ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { useAuthStore } from '@/store/auth'
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
+  import Loading from '@/components/Loading.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
   import tag from '@/icons/tag-solid.svg'
@@ -168,21 +170,26 @@
     components: {
       Header: Header,
       Body: Body,
+      Loading: Loading,
     },
     setup() {
+      const loading = ref<InstanceType<typeof Loading>>()
       const state = reactive<State>({ url: null })
       const router = useRouter()
       const { getUser } = useAuthStore()
       const regist = async () => {
+        loading?.value?.start()
         console.log(state.url)
         const value = {
           url: state.url,
         }
         const result = functions.httpsCallable('helloWorld', value)
         alert(JSON.stringify(result))
+        loading?.value?.finish()
       }
       const registList: Array<ShioriHeader> = reactive([])
       const searchCreateAtDesc = async () => {
+        loading?.value?.start()
         const result = await functions.httpsCallable('searchCreateAtDesc', {
           limit: 30,
         })
@@ -190,30 +197,35 @@
         results.forEach((header) => {
           registList.push(header)
         })
+        loading?.value?.finish()
       }
       const updateFavorite = async (
         id: string,
         favorite = true,
         index: number
       ) => {
+        loading?.value?.start()
         const result = await functions.httpsCallable('updateFavorite', {
           id,
           favorite: !favorite,
         })
         alert(JSON.stringify(result))
         registList[index].favorite = !favorite
+        loading?.value?.finish()
       }
       const updatPinning = async (
         id: string,
         pinning = true,
         index: number
       ) => {
+        loading?.value?.start()
         const result = await functions.httpsCallable('updatPinning', {
           id,
           pinning: !pinning,
         })
         alert(JSON.stringify(result))
         registList[index].pinning = !pinning
+        loading?.value?.finish()
       }
       const searchFavoriteOnly = async () => {
         await router.push({
@@ -221,7 +233,9 @@
           params: { id: getUser()?.uid },
         })
       }
-      searchCreateAtDesc()
+      onMounted(() => {
+        searchCreateAtDesc()
+      })
       return {
         state,
         regist,
@@ -232,6 +246,7 @@
         updateFavorite,
         updatPinning,
         searchFavoriteOnly,
+        loading,
       }
     },
   })

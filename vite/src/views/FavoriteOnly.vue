@@ -1,4 +1,5 @@
 <template>
+  <Loading ref="loading" />
   <Header />
   <Body>
     <div class="min-h-screen pt-20 hero">
@@ -71,10 +72,11 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, onMounted } from 'vue'
+  import { defineComponent, reactive, ref, onMounted } from 'vue'
   import functions from '@/utils/functions'
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
+  import Loading from '@/components/Loading.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
 
@@ -94,11 +96,14 @@
     components: {
       Header: Header,
       Body: Body,
+      Loading: Loading,
     },
     setup() {
+      const loading = ref<InstanceType<typeof Loading>>()
       const searchList: Array<ShioriHeader> = reactive([])
       const search = async () => {
         // HTTP呼び出し
+        loading?.value?.start()
         const result = await functions.httpsCallable(
           'searchCreateAtDescFavoriteOnly',
           { limit: 30 }
@@ -107,6 +112,7 @@
         results.forEach((header) => {
           searchList.push(header)
         })
+        loading?.value?.finish()
       }
       onMounted(() => {
         search()
@@ -116,6 +122,7 @@
         favorite = true,
         index: number
       ) => {
+        loading?.value?.start()
         // HTTP呼び出し
         // firebase.functions().useEmulator('localhost', 5001)
         const result = await functions.httpsCallable('updateFavorite', {
@@ -124,12 +131,14 @@
         })
         alert(JSON.stringify(result))
         searchList[index].favorite = !favorite
+        loading?.value?.finish()
       }
       const updatPinning = async (
         id: string,
         pinning = true,
         index: number
       ) => {
+        loading?.value?.start()
         // HTTP呼び出し
         // firebase.functions().useEmulator('localhost', 5001)
         const result = await functions.httpsCallable('updatPinning', {
@@ -138,6 +147,7 @@
         })
         alert(JSON.stringify(result))
         searchList[index].pinning = !pinning
+        loading?.value?.finish()
       }
       return {
         search,
@@ -146,6 +156,7 @@
         thumbtack,
         updateFavorite,
         updatPinning,
+        loading,
       }
     },
   })

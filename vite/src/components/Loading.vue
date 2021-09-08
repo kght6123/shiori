@@ -14,9 +14,11 @@
     setup: () => {
       const data = reactive<Data>({ loading: false })
       const start = () => {
+        console.log('start', data)
         data.loading = true
       }
       const finish = () => {
+        console.log('finish', data)
         data.loading = false
       }
       return { data, start, finish }

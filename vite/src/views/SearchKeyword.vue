@@ -1,4 +1,5 @@
 <template>
+  <Loading ref="loading" />
   <Header @search="search" />
   <Body>
     <div class="min-h-screen pt-20 hero">
@@ -71,10 +72,11 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, onMounted } from 'vue'
+  import { defineComponent, reactive, onMounted, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
+  import Loading from '@/components/Loading.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
   import functions from '@/utils/functions'
@@ -95,11 +97,14 @@
     components: {
       Header: Header,
       Body: Body,
+      Loading: Loading,
     },
     setup() {
+      const loading = ref<InstanceType<typeof Loading>>()
       const route = useRoute()
       const searchList: Array<ShioriHeader> = reactive([])
       const search = async (keyword: string) => {
+        loading?.value?.start()
         console.log('search', keyword)
         const value = {
           keyword,
@@ -113,6 +118,7 @@
         ;(result.data.results as Array<ShioriHeader>).forEach((header) => {
           searchList.push(header)
         })
+        loading?.value?.finish()
       }
       onMounted(() => {
         const keyword = route.params.keyword as string
@@ -124,24 +130,28 @@
         favorite = true,
         index: number
       ) => {
+        loading?.value?.start()
         const result = await functions.httpsCallable('updateFavorite', {
           id,
           favorite: !favorite,
         })
         alert(JSON.stringify(result))
         searchList[index].favorite = !favorite
+        loading?.value?.finish()
       }
       const updatPinning = async (
         id: string,
         pinning = true,
         index: number
       ) => {
+        loading?.value?.start()
         const result = await functions.httpsCallable('updatPinning', {
           id,
           pinning: !pinning,
         })
         alert(JSON.stringify(result))
         searchList[index].pinning = !pinning
+        loading?.value?.finish()
       }
       return {
         search,
@@ -150,6 +160,7 @@
         thumbtack,
         updateFavorite,
         updatPinning,
+        loading,
       }
     },
   })

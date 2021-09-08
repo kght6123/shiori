@@ -72,12 +72,11 @@
 
 <script lang="ts">
   import { defineComponent, reactive, onMounted } from 'vue'
+  import functions from '@/utils/functions'
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
-  import firebase from 'firebase/app'
-  import 'firebase/functions'
 
   interface ShioriHeader {
     ogImageUrl: string
@@ -98,17 +97,15 @@
     },
     setup() {
       const searchList: Array<ShioriHeader> = reactive([])
-      const search = () => {
+      const search = async () => {
         // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const echo_onCall = firebase
-          .functions()
-          .httpsCallable('searchCreateAtDescFavoriteOnly')
-        echo_onCall({ limit: 30 }).then((result) => {
-          // alert(JSON.stringify(result.data.results))
-          ;(result.data.results as Array<ShioriHeader>).forEach((header) => {
-            searchList.push(header)
-          })
+        const result = await functions.httpsCallable(
+          'searchCreateAtDescFavoriteOnly',
+          { limit: 30 }
+        )
+        const results = result.data.results as Array<ShioriHeader>
+        results.forEach((header) => {
+          searchList.push(header)
         })
       }
       onMounted(() => {
@@ -120,10 +117,11 @@
         index: number
       ) => {
         // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const result = await firebase
-          .functions()
-          .httpsCallable('updateFavorite')({ id, favorite: !favorite })
+        // firebase.functions().useEmulator('localhost', 5001)
+        const result = await functions.httpsCallable('updateFavorite', {
+          id,
+          favorite: !favorite,
+        })
         alert(JSON.stringify(result))
         searchList[index].favorite = !favorite
       }
@@ -133,10 +131,11 @@
         index: number
       ) => {
         // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const result = await firebase.functions().httpsCallable('updatPinning')(
-          { id, pinning: !pinning }
-        )
+        // firebase.functions().useEmulator('localhost', 5001)
+        const result = await functions.httpsCallable('updatPinning', {
+          id,
+          pinning: !pinning,
+        })
         alert(JSON.stringify(result))
         searchList[index].pinning = !pinning
       }

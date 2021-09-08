@@ -150,8 +150,7 @@
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
   import tag from '@/icons/tag-solid.svg'
-  import firebase from 'firebase/app'
-  import 'firebase/functions'
+  import functions from '@/utils/functions'
 
   interface ShioriHeader {
     ogImageUrl: string
@@ -176,35 +175,20 @@
       const { getUser } = useAuthStore()
       const regist = async () => {
         console.log(state.url)
-        // const response = await fetch(state.url, {
-        //   // method: 'GET',
-        //   // mode: 'no-cors',
-        //   // headers: {
-        //   //   'Content-Type': 'text/html',
-        //   // },
-        // })
-        // const text = await response.text()
-        // console.log(text)
         const value = {
           url: state.url,
         }
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const echo_onCall = firebase.functions().httpsCallable('helloWorld')
-        echo_onCall(value).then((result) => alert(JSON.stringify(result)))
+        const result = functions.httpsCallable('helloWorld', value)
+        alert(JSON.stringify(result))
       }
       const registList: Array<ShioriHeader> = reactive([])
-      const searchCreateAtDesc = () => {
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const echo_onCall = firebase
-          .functions()
-          .httpsCallable('searchCreateAtDesc')
-        echo_onCall({ limit: 30 }).then((result) => {
-          // alert(JSON.stringify(result.data.results))
-          ;(result.data.results as Array<ShioriHeader>).forEach((header) => {
-            registList.push(header)
-          })
+      const searchCreateAtDesc = async () => {
+        const result = await functions.httpsCallable('searchCreateAtDesc', {
+          limit: 30,
+        })
+        const results = result.data.results as Array<ShioriHeader>
+        results.forEach((header) => {
+          registList.push(header)
         })
       }
       const updateFavorite = async (
@@ -212,11 +196,10 @@
         favorite = true,
         index: number
       ) => {
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const result = await firebase
-          .functions()
-          .httpsCallable('updateFavorite')({ id, favorite: !favorite })
+        const result = await functions.httpsCallable('updateFavorite', {
+          id,
+          favorite: !favorite,
+        })
         alert(JSON.stringify(result))
         registList[index].favorite = !favorite
       }
@@ -225,11 +208,10 @@
         pinning = true,
         index: number
       ) => {
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const result = await firebase.functions().httpsCallable('updatPinning')(
-          { id, pinning: !pinning }
-        )
+        const result = await functions.httpsCallable('updatPinning', {
+          id,
+          pinning: !pinning,
+        })
         alert(JSON.stringify(result))
         registList[index].pinning = !pinning
       }

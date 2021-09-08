@@ -77,8 +77,7 @@
   import Body from '@/components/Body.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
-  import firebase from 'firebase/app'
-  import 'firebase/functions'
+  import functions from '@/utils/functions'
 
   interface ShioriHeader {
     ogImageUrl: string
@@ -105,17 +104,14 @@
         const value = {
           keyword,
         }
-        firebase.functions().useEmulator('localhost', 5001)
-        const echo_onCall = firebase
-          .functions()
-          .httpsCallable('searchIndexesKeyword')
-        echo_onCall(value).then((result) => {
-          // alert(JSON.stringify(result.data.results))
-          searchList.splice(0)
-          console.log(result.data.results)
-          ;(result.data.results as Array<ShioriHeader>).forEach((header) => {
-            searchList.push(header)
-          })
+        const result = await functions.httpsCallable(
+          'searchIndexesKeyword',
+          value
+        )
+        searchList.splice(0)
+        console.log(result.data.results)
+        ;(result.data.results as Array<ShioriHeader>).forEach((header) => {
+          searchList.push(header)
         })
       }
       onMounted(() => {
@@ -128,11 +124,10 @@
         favorite = true,
         index: number
       ) => {
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const result = await firebase
-          .functions()
-          .httpsCallable('updateFavorite')({ id, favorite: !favorite })
+        const result = await functions.httpsCallable('updateFavorite', {
+          id,
+          favorite: !favorite,
+        })
         alert(JSON.stringify(result))
         searchList[index].favorite = !favorite
       }
@@ -141,11 +136,10 @@
         pinning = true,
         index: number
       ) => {
-        // HTTP呼び出し
-        firebase.functions().useEmulator('localhost', 5001)
-        const result = await firebase.functions().httpsCallable('updatPinning')(
-          { id, pinning: !pinning }
-        )
+        const result = await functions.httpsCallable('updatPinning', {
+          id,
+          pinning: !pinning,
+        })
         alert(JSON.stringify(result))
         searchList[index].pinning = !pinning
       }

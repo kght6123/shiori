@@ -21,9 +21,9 @@
           </div>
         </div>
       </div>
-      <div class="mt-72 hero">
+      <div class="z-10 mt-72 hero">
         <div class="shadow-2xl btn-group">
-          <button class="btn btn-active" @click="searchFavoriteOnly">
+          <button class="shadow-2xl btn btn-active" @click="searchFavoriteOnly">
             <component
               :is="heart"
               class="inline-block w-6 h-6 mr-1 fill-current"
@@ -91,19 +91,22 @@
         <div
           v-for="(item, index) in registList"
           :key="item.url"
-          class="card bordered break-inside glass-dark"
+          class="card break-inside glass-dark"
         >
-          <figure>
+          <figure class="hidden md:inline">
             <img :src="item.ogImageUrl" />
           </figure>
           <div class="card-body">
-            <h2 class="card-title">
+            <h2 class="text-base card-title">
               {{ item.title }}
-              <div class="mx-2 badge badge-secondary">NEW</div>
+              <div class="mx-2 text-xs badge badge-secondary">NEW</div>
             </h2>
-            <a target="_blank" :href="item.url" class="link link-secondary">{{
-              item.url
-            }}</a>
+            <a
+              target="_blank"
+              :href="item.url"
+              class="text-sm truncate link link-secondary"
+              >{{ item.url }}</a
+            >
             <div class="justify-between card-actions">
               <div>
                 <button
@@ -116,7 +119,7 @@
                       'text-pink-500': item.favorite,
                       'text-gray-300': !item.favorite,
                     }"
-                    class="inline-block w-10 h-10 fill-current"
+                    class="inline-block w-8 h-8 fill-current"
                   />
                 </button>
                 <button
@@ -129,11 +132,11 @@
                       'text-pink-500': item.pinning,
                       'text-gray-300': !item.pinning,
                     }"
-                    class="inline-block w-10 h-10 fill-current"
+                    class="inline-block w-8 h-8 fill-current"
                   />
                 </button>
               </div>
-              <button class="btn btn-secondary">More info</button>
+              <button class="text-xs btn btn-secondary">More info</button>
             </div>
           </div>
         </div>

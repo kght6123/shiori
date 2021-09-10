@@ -1,5 +1,9 @@
 <template>
-  <div class="bg-fixed bg-cover" :style="routerViewStyle">
+  <div>
+    <span
+      class="fixed top-0 left-0 block w-screen h-screen bg-cover z--10"
+      :style="routerViewStyle"
+    ></span>
     <slot></slot>
   </div>
 </template>

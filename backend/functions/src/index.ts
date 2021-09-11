@@ -1,4 +1,5 @@
 /* eslint-disable object-curly-spacing */
+import { headerTrigger } from './headerTrigger'
 import { helloWorld } from './helloWorld'
 import { searchIndexesKeyword } from './searchIndexesKeyword'
 import { searchCreateAtDesc } from './searchCreateAtDesc'
@@ -7,6 +8,7 @@ import { searchCreateAtDescFavoriteOnly } from './searchCreateAtDescFavoriteOnly
 import { updateFavorite } from './updateFavorite'
 import { updatPinning } from './updatPinning'
 
+exports.headerTrigger = headerTrigger
 exports.helloWorld = helloWorld
 exports.searchIndexesKeyword = searchIndexesKeyword
 exports.searchCreateAtDesc = searchCreateAtDesc

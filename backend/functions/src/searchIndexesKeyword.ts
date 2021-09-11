@@ -30,7 +30,7 @@ export const searchIndexesKeyword = functions
     if (context.auth) {
       if (!keyword) return { status: 400 }
       const tokens = await tokenize(keyword)
-      console.log(tokens)
+      // console.log(tokens)
       const searchWords = Array.from(
         new Set(tokens.map((token) => token.surface_form)), // 表層系だけの配列にする
       )
@@ -49,15 +49,15 @@ export const searchIndexesKeyword = functions
       // searchWords.forEach((word) => {
       //   query = query.where(`title.${word}`, '==', 0)
       // })
-      console.log(searchWords)
+      // console.log(searchWords)
       searchWords.forEach((word) => {
         query = query.where(`${word}`, '==', 0)
       })
 
       const snap = await query.get()
-      console.log(snap.size)
+      // console.log(snap.size)
       const idList = snap.docs.map((doc) => doc.id)
-      console.log(idList)
+      // console.log(idList)
       const results = []
       for (const id of idList) {
         const headersDocRef = db
@@ -66,7 +66,7 @@ export const searchIndexesKeyword = functions
           .collection('headers')
           .doc(id)
         const snapShot = await headersDocRef.get()
-        console.log(snapShot.data())
+        // console.log(snapShot.data())
         const data = snapShot.data()
         const {
           ogImageUrl,

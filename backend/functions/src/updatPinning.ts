@@ -4,6 +4,10 @@ import { db } from './firestore'
 
 export const updatPinning = functions
   .region('asia-northeast1')
+  .runWith({
+    timeoutSeconds: 60,
+    memory: '128MB',
+  })
   .https.onCall(async ({ pinning = true, id = null }, context) => {
     // ensure #posts exists in the DOM.
     if (context.auth && id !== null) {

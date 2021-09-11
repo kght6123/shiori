@@ -187,7 +187,11 @@
           url: state.url,
         }
         const result = functions.httpsCallable('helloWorld', value)
-        alert(JSON.stringify(result))
+        alert(
+          `とうろく完了しました。\nタイトルや画像の表示、キーワード検索が出来るようになるまで、時間がかかることがあります。\n${JSON.stringify(
+            result
+          )}`
+        )
         loading?.value?.finish()
       }
       const registList: Array<ShioriHeader> = reactive([])

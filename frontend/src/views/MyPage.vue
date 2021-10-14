@@ -145,6 +145,7 @@
       </div>
     </div>
   </Body>
+  <OrganismsFooterMenu />
 </template>
 
 <script lang="ts">
@@ -153,6 +154,7 @@
   import { useAuthStore } from '@/store/auth'
   import Header from '@/components/Header.vue'
   import Body from '@/components/Body.vue'
+  import OrganismsFooterMenu from '@/components/organisms/FooterMenu.vue'
   import Loading from '@/components/Loading.vue'
   import heart from '@/icons/heart-solid.svg'
   import thumbtack from '@/icons/thumbtack-solid.svg'
@@ -176,6 +178,7 @@
       Header: Header,
       Body: Body,
       Loading: Loading,
+      OrganismsFooterMenu: OrganismsFooterMenu,
     },
     setup() {
       const loading = ref<InstanceType<typeof Loading>>()

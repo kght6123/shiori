@@ -9,12 +9,12 @@
   export default defineComponent({
     name: 'AtomsButton',
     emits: ['click'],
-    setup(props, { attrs, slots, emit }) {
+    setup(props, { /*attrs, slots,*/ emit }) {
       const click = (event: Event) => {
         console.log(event)
-        if (event.target instanceof HTMLButtonElement) {
-          emit('click', event.target.value)
-        }
+        // if (event.target instanceof HTMLButtonElement) {
+        emit('click' /*event.target.value*/)
+        // }
       }
       return { click }
     },

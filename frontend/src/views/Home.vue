@@ -9,7 +9,16 @@
         </p>
       </div>
       <div
-        class="flex-shrink-0 w-full max-w-sm shadow-2xl  card glass dark:glass-dark"
+        v-if="!state.isLoggedin"
+        class="
+          flex-shrink-0
+          w-full
+          max-w-sm
+          shadow-2xl
+          card
+          glass
+          dark:glass-dark
+        "
       >
         <div class="card-body">
           <div class="form-control">
@@ -41,6 +50,7 @@
       </div>
     </div>
   </Body>
+  <OrganismsFooterMenu />
   <Footer />
 </template>
 
@@ -51,6 +61,7 @@
   import Footer from '@/components/Footer.vue'
   import OrganismsSignInAndSignOutForm from '@/components/organisms/SignInAndSignOutForm.vue'
   import { useAuthStore } from '@/store/auth'
+  import OrganismsFooterMenu from '@/components/organisms/FooterMenu.vue'
 
   export default defineComponent({
     name: 'Home',
@@ -59,6 +70,7 @@
       Header: Header,
       Body: Body,
       Footer: Footer,
+      OrganismsFooterMenu: OrganismsFooterMenu,
     },
     setup() {
       const guest = '{{ Guest }}'

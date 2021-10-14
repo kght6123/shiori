@@ -11,7 +11,11 @@
       {
         "ignoreAtRules": [
           "extends",
-          "tailwindcss"
+          "tailwindcss",
+          "apply",
+          "variants",
+          "responsive",
+          "screen"
         ]
       }
     ]

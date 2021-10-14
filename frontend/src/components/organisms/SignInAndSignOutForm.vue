@@ -1,7 +1,4 @@
 <template>
-  <atoms-button v-if="state.isLoggedin" @click="signout()"
-    >Sign out</atoms-button
-  >
   <molcules-sign-in-with-google-button @click="onSignIn()" />
 </template>
 
@@ -9,19 +6,17 @@
   import { defineComponent } from 'vue'
   import { useRouter /*, useRoute*/ } from 'vue-router'
   import { useAuthStore } from '@/store/auth'
-  import AtomsButton from '@/components/atoms/Button.vue'
   import MolculesSignInWithGoogleButton from '@/components/molcules/SignInWithGoogleButton.vue'
 
   export default defineComponent({
     name: 'OrganismsSignInAndSignOutForm',
     components: {
       MolculesSignInWithGoogleButton: MolculesSignInWithGoogleButton,
-      AtomsButton: AtomsButton,
     },
     setup() {
       const router = useRouter()
       // const route = useRoute()
-      const { signout, state, signin } = useAuthStore()
+      const { state, signin } = useAuthStore()
       const onSignIn = async () => {
         const result = await signin()
         if (result && result.user) {
@@ -30,7 +25,6 @@
       }
       return {
         state,
-        signout,
         onSignIn,
       }
     },

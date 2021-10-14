@@ -26,13 +26,13 @@
       </div>
     </div>
     <div class="navbar-end">
-      <atoms-button
+      <!--atoms-button
         v-if="state.isLoggedin"
         class="btn btn-square btn-ghost"
         @click="signout()"
       >
         <component :is="signOut" class="inline-block w-6 h-6 fill-current" />
-      </atoms-button>
+      </atoms-button-->
       <div v-if="state.isLoggedin" class="avatar">
         <div class="w-10 h-10 m-1 mask mask-squircle">
           <img :src="state.photoURL" />
@@ -66,7 +66,7 @@
   import cog from '@/icons/cog-solid.svg'
   import heart from '@/icons/heart-solid.svg'
   import search from '@/icons/search-solid.svg'
-  import signOut from '@/icons/sign-out-alt-solid.svg'
+  // import signOut from '@/icons/sign-out-alt-solid.svg'
 
   export interface Data {
     keyword: string | null
@@ -77,7 +77,7 @@
     emits: ['search'],
     setup(props, { emit }) {
       const router = useRouter()
-      const { signout, state, getUser } = useAuthStore()
+      const { state, getUser } = useAuthStore()
       const route = useRoute()
       const data = reactive<Data>({ keyword: null })
       const searchIndexesKeyword = async () => {
@@ -104,12 +104,12 @@
       })
       return {
         state,
-        signout,
+        // signout,
         search,
         heart,
         home,
         cog,
-        signOut,
+        // signOut,
         data,
         searchIndexesKeyword,
       }

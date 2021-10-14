@@ -1,5 +1,8 @@
 <template>
-  <footer class="z-20 fixed-footer glass dark:glass-dark">
+  <footer
+    v-if="!state.isLoggedin"
+    class="z-20 fixed-footer glass dark:glass-dark"
+  >
     <div>
       <div class="grid grid-flow-col gap-4">
         <a>
@@ -51,12 +54,14 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue'
+  import { useAuthStore } from '@/store/auth'
 
   export default defineComponent({
     name: 'Footer',
     components: {},
     setup() {
-      return {}
+      const { state } = useAuthStore()
+      return { state }
     },
   })
 </script>

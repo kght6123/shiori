@@ -11,10 +11,15 @@
     "@vue/typescript/recommended",
     "@vue/prettier",
     "@vue/prettier/@typescript-eslint"
+    // "plugin:tailwindcss/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 2021
-  },
-  "plugins": [],
-  "rules": {}
+  }
+  // "plugins": ["tailwindcss"],
+  // "rules": {
+  //   "tailwindcss/classnames-order": "warn",
+  //   "tailwindcss/no-custom-classname": "warn",
+  //   "tailwindcss/no-contradicting-classname": "error"
+  // }
 }

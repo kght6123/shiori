@@ -7,7 +7,7 @@
 ```sh
 npm run dev # start dev server
 
-npm run build # build
+npm run build:vite # build
 
 npm run deploy # deploy Firebase Hosting
 ```

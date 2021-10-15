@@ -44,6 +44,24 @@
             ></path>
           </svg>
         </a>
+        <a>
+          <component
+            :is="Apple"
+            class="inline-block text-pink-500 fill-current w-7 h-7"
+          />
+        </a>
+        <a>
+          <component
+            :is="Apple"
+            class="inline-block text-blue-500 fill-current w-7 h-7"
+          />
+        </a>
+        <a>
+          <component
+            :is="Apple"
+            class="inline-block text-green-500 fill-current w-7 h-7"
+          />
+        </a>
       </div>
     </div>
     <div>
@@ -55,13 +73,14 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { useAuthStore } from '@/store/auth'
+  import Apple from '@/icons/apple.svg?component'
 
   export default defineComponent({
     name: 'Footer',
     components: {},
     setup() {
       const { state } = useAuthStore()
-      return { state }
+      return { Apple, state }
     },
   })
 </script>
